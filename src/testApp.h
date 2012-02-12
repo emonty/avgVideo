@@ -2,12 +2,15 @@
 #define _TEST_APP
 
 #include <vector>
+#include <ola/DmxBuffer.h>
 
 #include "ofMain.h"
 
 // listen on port 12345
 #define PORT 12345
 #define NUM_MSG_STRINGS 20
+
+class DmxProxy;
 
 class testApp :
   public ofBaseApp
@@ -22,18 +25,10 @@ class testApp :
   int avg_red;
   int avg_blue;
   int avg_green;
+  DmxProxy *_proxy;
+  ola::DmxBuffer _dmx;
 public:
-  explicit testApp(const std::string filename) :
-    _filename(filename),
-    _movie(),
-    screenW(0),
-    screenH(0),
-    number_of_pixels(0),
-    color_pixels(0),
-    avg_red(0),
-    avg_blue(0),
-    avg_green(0)
-  {}
+  explicit testApp(const std::string filename);
   void setup();
   void update();
   void draw();

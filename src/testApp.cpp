@@ -1,8 +1,24 @@
 #include "testApp.h"
+#include "dmxProxy.h"
 
 #include <iostream>
 
 bool showMovie= false;
+
+testApp::testApp(const std::string filename) :
+  _filename(filename),
+  _movie(),
+  screenW(0),
+  screenH(0),
+  number_of_pixels(0),
+  color_pixels(0),
+  avg_red(0),
+  avg_blue(0),
+  avg_green(0),
+  _proxy(new DmxProxy),
+  _dmx()
+{}
+
 //--------------------------------------------------------------
 void testApp::setup(){
 
@@ -31,34 +47,39 @@ void testApp::update(){
   for (unsigned int loop=0; loop <= number_of_pixels; loop+=3)
   {
     reds+= pixels[loop];
-    blues+= pixels[loop+1];
-    greens+= pixels[loop+2];
+    greens+= pixels[loop+1];
+    blues+= pixels[loop+2];
   }
   avg_red= int(reds/color_pixels);
-  avg_blue= int(blues/color_pixels);
   avg_green= int(greens/color_pixels);
+  avg_blue= int(blues/color_pixels);
 
+  _dmx.SetChannel(0, avg_red);
+  _dmx.SetChannel(1, avg_green);
+  _dmx.SetChannel(2, avg_blue);
 }
 
 //--------------------------------------------------------------
 void testApp::draw(){
 
 
-  ofBackground(avg_red, avg_blue, avg_green);
+  ofBackground(avg_red, avg_green, avg_blue);
 
-  ofSetColor(255-avg_red, 255-avg_blue, 255-avg_green);
+  ofSetColor(255-avg_red, 255-avg_green, 255-avg_blue);
+  _proxy->sendDmx(_dmx);
+
   ofDrawBitmapString("RED: dmx: " +
                      ofToString(avg_red) +
                      " percent: " +
                      ofToString(avg_red * 100 / 255), 20, 40);
-  ofDrawBitmapString("BLUE: dmx: " +
-                     ofToString(avg_blue) +
-                     " percent: " +
-                     ofToString(avg_blue * 100 / 255), 20, 60);
   ofDrawBitmapString("GREEN: dmx: " +
                      ofToString(avg_green) +
                      " percent: " +
-                     ofToString(avg_green * 100 / 255), 20, 80);
+                     ofToString(avg_green * 100 / 255), 20, 60);
+  ofDrawBitmapString("BLUE: dmx: " +
+                     ofToString(avg_blue) +
+                     " percent: " +
+                     ofToString(avg_blue * 100 / 255), 20, 80);
 
   if (showMovie)
   {
