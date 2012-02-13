@@ -19,7 +19,7 @@
  */
 
 #include "ofMain.h"
-#include "testApp.h"
+#include "avgVid.h"
 #include "ofAppGlutWindow.h"
 
 //========================================================================
