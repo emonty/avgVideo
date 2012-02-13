@@ -24,19 +24,16 @@
 
 #include <iostream>
 
-bool showMovie= false;
-double multiplier= 1.0;
 
 testApp::testApp(const std::string filename) :
   _filename(filename),
   _movie(),
-  screenW(0),
-  screenH(0),
-  number_of_pixels(0),
   color_pixels(0),
   avg_red(0),
   avg_blue(0),
   avg_green(0),
+  showMovie(false),
+  multiplier(1.0),
   _client(),
   _dmx()
 {}
@@ -57,8 +54,7 @@ void testApp::setup(){
   _movie.setLoopState(OF_LOOP_NORMAL);
   _movie.loadMovie(_filename);
   _movie.play();
-  number_of_pixels= _movie.width*_movie.height;
-  color_pixels = number_of_pixels / 3;
+  color_pixels = _movie.width * _movie.height / 3;
 
   _movie.firstFrame();
 
@@ -77,19 +73,27 @@ void testApp::setup(){
 void testApp::update(){
 
   _movie.idleMovie();
-  unsigned char *pixels = _movie.getPixels();
+  const ofPixelsRef pixels= _movie.getPixelsRef();
   long double reds= 0.0;
   long double blues= 0.0;
   long double greens= 0.0;
-  for (unsigned int loop=0; loop <= number_of_pixels; loop+=3)
+
+  for (int x= 0; x < _movie.width; ++x)
   {
-    reds+= pixels[loop];
-    greens+= pixels[loop+1];
-    blues+= pixels[loop+2];
+    for (int y= 0; y < _movie.height; ++y)
+    {
+      reds += pixels.getColor(x, y).r;
+      greens += pixels.getColor(x, y).g;
+      blues += pixels.getColor(x, y).b;
+    }
   }
-  avg_red= int(reds/color_pixels*multiplier);
-  avg_green= int(greens/color_pixels*multiplier);
-  avg_blue= int(blues/color_pixels*multiplier);
+
+  // Divide by 10 because ofColor rgb values are in units of 0-1000.
+  //
+  // Then we multiply by 2.55 to get us on DMX scale and not percentage
+  avg_red= int(reds/color_pixels*multiplier)/10*2.55;
+  avg_green= int(greens/color_pixels*multiplier)/10*2.55;
+  avg_blue= int(blues/color_pixels*multiplier)/10*2.55;
 
   _dmx.SetChannel(0, avg_red);
   _dmx.SetChannel(1, avg_green);
@@ -118,7 +122,7 @@ void testApp::draw(){
                      " percent: " +
                      ofToString(avg_blue * 100 / 255), 20, 80);
   ofDrawBitmapString("PERCENT: " +
-                     ofToString(int(multiplier * 100)), 20, 100);
+                     ofToString(int(multiplier * 100)), 20, 110);
 
   if (showMovie)
   {

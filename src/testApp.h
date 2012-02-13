@@ -38,13 +38,12 @@ class testApp :
 
   const std::string _filename;
   ofVideoPlayer _movie;
-  int screenW;
-  int screenH;
-  unsigned int number_of_pixels;
   unsigned int color_pixels;
   int avg_red;
   int avg_blue;
   int avg_green;
+  bool showMovie;
+  double multiplier;
   ola::StreamingClient _client;
   ola::DmxBuffer _dmx;
 public:
