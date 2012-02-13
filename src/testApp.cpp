@@ -43,6 +43,8 @@ testApp::testApp(const std::string filename) :
 
 testApp::~testApp()
 {
+  _dmx.Blackout();
+  _client.SendDmx(0, _dmx);
   _client.Stop();
 }
 
