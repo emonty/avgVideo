@@ -19,7 +19,8 @@
  */
 
 #include "testApp.h"
-#include "dmxProxy.h"
+
+#include <ola/Logging.h>
 
 #include <iostream>
 
@@ -36,13 +37,13 @@ testApp::testApp(const std::string filename) :
   avg_red(0),
   avg_blue(0),
   avg_green(0),
-  _proxy(new DmxProxy),
+  _client(),
   _dmx()
 {}
 
 testApp::~testApp()
 {
-  delete _proxy;
+  _client.Stop();
 }
 
 //--------------------------------------------------------------
@@ -56,10 +57,18 @@ void testApp::setup(){
   _movie.play();
   number_of_pixels= _movie.width*_movie.height;
   color_pixels = number_of_pixels / 3;
-  
 
   _movie.firstFrame();
 
+  ola::InitLogging(ola::OLA_LOG_WARN, ola::OLA_LOG_STDERR);
+
+  _dmx.Blackout();
+
+  if (not _client.Setup())
+  {
+    std::cout << "OLA Client setup failed" << std::endl;
+    exit();
+  }
 }
 
 //--------------------------------------------------------------
@@ -92,7 +101,7 @@ void testApp::draw(){
   ofBackground(avg_red, avg_green, avg_blue);
 
   ofSetColor(255-avg_red, 255-avg_green, 255-avg_blue);
-  _proxy->sendDmx(_dmx);
+  _client.SendDmx(0, _dmx);
 
   ofDrawBitmapString("RED: dmx: " +
                      ofToString(avg_red) +

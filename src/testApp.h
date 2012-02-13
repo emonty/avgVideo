@@ -22,6 +22,7 @@
 
 #include <vector>
 #include <ola/DmxBuffer.h>
+#include <ola/StreamingClient.h>
 
 #include "ofMain.h"
 
@@ -44,7 +45,7 @@ class testApp :
   int avg_red;
   int avg_blue;
   int avg_green;
-  DmxProxy *_proxy;
+  ola::StreamingClient _client;
   ola::DmxBuffer _dmx;
 public:
   explicit testApp(const std::string filename);
