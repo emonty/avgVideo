@@ -4,6 +4,7 @@
 #include <iostream>
 
 bool showMovie= false;
+double multiplier= 1.0;
 
 testApp::testApp(const std::string filename) :
   _filename(filename),
@@ -18,6 +19,11 @@ testApp::testApp(const std::string filename) :
   _proxy(new DmxProxy),
   _dmx()
 {}
+
+testApp::~testApp()
+{
+  delete _proxy;
+}
 
 //--------------------------------------------------------------
 void testApp::setup(){
@@ -50,9 +56,9 @@ void testApp::update(){
     greens+= pixels[loop+1];
     blues+= pixels[loop+2];
   }
-  avg_red= int(reds/color_pixels);
-  avg_green= int(greens/color_pixels);
-  avg_blue= int(blues/color_pixels);
+  avg_red= int(reds/color_pixels*multiplier);
+  avg_green= int(greens/color_pixels*multiplier);
+  avg_blue= int(blues/color_pixels*multiplier);
 
   _dmx.SetChannel(0, avg_red);
   _dmx.SetChannel(1, avg_green);
@@ -80,6 +86,8 @@ void testApp::draw(){
                      ofToString(avg_blue) +
                      " percent: " +
                      ofToString(avg_blue * 100 / 255), 20, 80);
+  ofDrawBitmapString("PERCENT: " +
+                     ofToString(int(multiplier * 100)), 20, 100);
 
   if (showMovie)
   {
@@ -100,6 +108,20 @@ void testApp::keyPressed(int key){
   switch(key) {
     case 'v':
       showMovie = showMovie ? false : true;
+      break;
+    case '+':
+      if (multiplier < 1)
+        multiplier += 0.01;
+      break;
+    case '-':
+      if (multiplier > 0)
+        multiplier -= 0.01;
+      break;
+    case 'f':
+      multiplier = 1;
+      break;
+    case '0':
+      multiplier = 0;
       break;
   }
 }

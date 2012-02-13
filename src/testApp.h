@@ -29,6 +29,8 @@ class testApp :
   ola::DmxBuffer _dmx;
 public:
   explicit testApp(const std::string filename);
+  virtual ~testApp();
+
   void setup();
   void update();
   void draw();
