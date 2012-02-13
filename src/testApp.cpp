@@ -124,14 +124,6 @@ void testApp::draw(){
   {
     _movie.draw(60,100);
   }
-  if (_movie.getCurrentFrame() < _movie.getTotalNumFrames())
-  {
-    _movie.nextFrame();
-  }
-  else
-  {
-    _movie.firstFrame();
-  }
 }
 
 //--------------------------------------------------------------
