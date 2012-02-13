@@ -20,11 +20,15 @@
 
 #pragma once
 
+#include "ofMain.h"
+
+// Have to undef CurrentTime from X11 headers.
+#undef CurrentTime
+
 #include <vector>
 #include <ola/DmxBuffer.h>
 #include <ola/StreamingClient.h>
 
-#include "ofMain.h"
 
 // listen on port 12345
 #define PORT 12345
