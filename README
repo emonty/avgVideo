@@ -1,0 +1,11 @@
+avgVideo takes a video file on the command line, calculates the average
+RGB color value of each frame and then outputs it to both a GL window
+and to an OLA lighting system running locally on the machine.
+
+The code is intended to be used inside of an openFrameworks source tree.
+Drop this directory in to apps/myApps inside openFrameworks, run make
+and you should be good to go.
+
+If the build can't find libopenFrameworks.a, change to
+libs/openFrameworksCompiled/project/linux in the root of the openFrameworks
+source tree and run make from there.
